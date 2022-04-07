@@ -1,4 +1,4 @@
-using play.catalog.service.Dtos;
+using Play.Catalog.Service.Dtos;
 using play.catalog.service.Entities;
 
 namespace play.catalog.service

@@ -1,4 +1,4 @@
-namespace play.Common.Settings
+namespace Play.Common.Settings
 {
     public class MongoDbSettings
     {

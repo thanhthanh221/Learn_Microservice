@@ -2,8 +2,9 @@ using System.Linq.Expressions;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using play.Common;
+using Play.Common;
 
-namespace play.Common.MongoDb
+namespace Play.Common.MongoDb
 {
     // Kế thừa được khi T kế thừa từ IEntity
     public class MongoRepository<T> : IRepository<T> where T: IEntity

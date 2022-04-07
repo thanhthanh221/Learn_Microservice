@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
+using play.Common;
 
-namespace play.Common
+namespace Play.Common
 {
     public interface IRepository<T> where T :IEntity // Tổng quát hóa đối tượng nhưng phải có ID
     {

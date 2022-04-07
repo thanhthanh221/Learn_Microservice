@@ -1,17 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
-using play.catalog.service.Dtos;
-using System.Linq;
+using Play.Catalog.Service.Dtos;
 using play.catalog.service.Entities;
 using play.Common;
+using MassTransit;
+using play.catalog.service;
+using Play.Catalog.Contracts;
 
-namespace play.catalog.service.Controllers
+namespace Play.Catalog.Service.Controllers
 {
     [ApiController]
     [Route("Items")]
     public class ItemsController: ControllerBase
     {
-        private readonly IRepository<Item>? itemsRepository;
-        private static int requestCounter = 0; // Số lần request trả về
+        private readonly IRepository<Item>? itemsRepository ;
+        private readonly IPublishEndpoint publishEndpoint ;
         private static readonly List<ItemDto> items = new List<ItemDto>()
         {
             new ItemDto(Guid.NewGuid(), "Potion", "Restores a small amount of HP", 5, DateTimeOffset.UtcNow),
@@ -20,32 +22,18 @@ namespace play.catalog.service.Controllers
             new ItemDto(Guid.NewGuid(), "Potion", "Restores a small amount of HP", 54, DateTimeOffset.UtcNow)
         };
 
-        public ItemsController(IRepository<Item>? itemsRepository)
+        public ItemsController(IRepository<Item>? itemsRepository, IPublishEndpoint publishEndpoint)
         {
+            this.publishEndpoint = publishEndpoint;
             this.itemsRepository = itemsRepository;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetAllAsync()
         {
-            // Mỗi lần truy vấn đến hàm get sẽ tăng thêm 1;
-            requestCounter++;
 
-            Console.WriteLine($"So Lan Client gui {requestCounter}");
-
-            if(requestCounter <= 2)
-            {
-                Console.WriteLine($"Truy van thu {requestCounter}: Delay.....");
-                await Task.Delay(TimeSpan.FromSeconds(10));
-            }
-            if(requestCounter <= 4)
-            {
-                Console.WriteLine($"Truy van thu {requestCounter}: bi loi 500 (Internal Sever Error)");
-                return StatusCode(500);
-            }
             IReadOnlyCollection<ItemDto> items = (await itemsRepository.GetAllAsync()).Select(item => item.AsDto()).ToList();
 
-            Console.WriteLine($"truy van thu {requestCounter}: 200 (Ok)");
             return Ok(items);
         }
         [HttpGet("{Id}")]
@@ -69,7 +57,7 @@ namespace play.catalog.service.Controllers
             };
             await itemsRepository.CreateAsync(item);
 
-            
+            await publishEndpoint.Publish(new CatalogItemCreacted(item.Id, item.Name, item.Description));
 
             return CreatedAtAction(nameof(GetByIdAsync), new {id = item.Id}, item);
 
@@ -88,6 +76,8 @@ namespace play.catalog.service.Controllers
             item.Name = updateItemDto.Name;
             item.Description = updateItemDto.Description;
             
+            await publishEndpoint.Publish(new CatalogItemUpdated(item.Id, item.Name, item.Description));
+
             await itemsRepository.UpdateAsync(item);
             return NoContent();
 
@@ -102,6 +92,8 @@ namespace play.catalog.service.Controllers
                 return NotFound();
             }
             await itemsRepository.DeleteAsync(Id);
+
+            await publishEndpoint.Publish(new CatalogItemDelete(item.Id));
             return NoContent();
             
         }

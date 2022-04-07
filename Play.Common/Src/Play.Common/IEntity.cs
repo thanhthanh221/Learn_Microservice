@@ -1,4 +1,4 @@
-namespace play.Common
+namespace Play.Common
 {
     public interface IEntity
     {

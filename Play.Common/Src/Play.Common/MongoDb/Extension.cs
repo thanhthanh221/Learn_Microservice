@@ -4,9 +4,9 @@ using MongoDB.Bson.Serialization.Serializers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
-using play.Common.MongoDb;
-using play.Common;
-using play.Common.Settings;
+using Play.Common.MongoDb;
+using Play.Common;
+using Play.Common.Settings;
 
 namespace play.Common.MongoDb
 {
@@ -19,13 +19,13 @@ namespace play.Common.MongoDb
             Services.AddSingleton(ServiceProvider =>
             {
                 IConfiguration? Configuration = ServiceProvider.GetService<IConfiguration>();
-                // Chuỗi kết nối
-                MongoDbSettings? mongoDbSettings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
-                MongoClient? mongoClient = new MongoClient(mongoDbSettings.ConnectionString);
+                
+                MongoDbSettings? mongoDbSettings = Configuration?.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
+                MongoClient? mongoClient = new MongoClient(mongoDbSettings?.ConnectionString);
                 // Tên của DataBase
-                ServiceSettings? serviceSettings = Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
+                ServiceSettings? serviceSettings = Configuration?.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
-                return mongoClient.GetDatabase(serviceSettings.ServiceName);
+                return mongoClient.GetDatabase(serviceSettings?.ServiceName);
                     
             });
             return Services;
