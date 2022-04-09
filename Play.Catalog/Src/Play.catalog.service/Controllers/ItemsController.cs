@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Play.Catalog.Service.Dtos;
-using play.catalog.service.Entities;
-using play.Common;
 using MassTransit;
-using play.catalog.service;
 using Play.Catalog.Contracts;
+using Play.Common;
+using play.catalog.service.Entities;
+using play.catalog.service;
 
 namespace Play.Catalog.Service.Controllers
 {

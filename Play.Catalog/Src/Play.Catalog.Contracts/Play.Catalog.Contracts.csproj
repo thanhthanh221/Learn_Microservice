@@ -4,6 +4,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <packageId>Play.Catalog_Contracts</packageId>
+    <Version>1.0.0</Version>
+    <Authors>BuiQuang</Authors>
   </PropertyGroup>
 
 </Project>

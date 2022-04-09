@@ -4,11 +4,10 @@ using MongoDB.Bson;
 using play.Common;
 using MongoDB.Driver;
 using play.catalog.service.Entities;
-using play.Common.Settings;
+using Play.Common.Settings;
 using play.Common.MongoDb;
 using MassTransit;
 using MassTransit.MultiBus;
-using Play.Common.Settings;
 using Play.Common.MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 ServiceSettings? serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
-builder.Services.AddMongoDb().AddMongoRepostory<Item>("Items");
-builder.Services.AddMassTransitWithRabbitMq();
+builder.Services.AddMongoDb().AddMongoRepostory<Item>("Items").AddMassTransitWithRabbitMq();
 
 builder.Services.AddControllers(option =>{
     option.SuppressAsyncSuffixInActionNames = false;

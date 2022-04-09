@@ -1,4 +1,5 @@
-using play.Common;
+using Play.Common;
+
 namespace Play.Inventory.Service.Entities
 {
     public class InventoryItem : IEntity

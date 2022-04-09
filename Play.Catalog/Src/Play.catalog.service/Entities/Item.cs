@@ -1,4 +1,5 @@
-using play.Common;
+using Play.Common;
+
 namespace play.catalog.service.Entities
 {
 

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using play.Common;
 using Play.Inventory.Service.Entities;
 using Play.Inventory.Service.Dtos;
 using Play.Inventory.Service.Clients;
+using Play.Common;
 
 namespace Play.Inventory.Service.Controllers
 {
@@ -10,14 +10,15 @@ namespace Play.Inventory.Service.Controllers
     [Route("Items")]
     public class ItemsController : ControllerBase
     {
-        private readonly IRepository<InventoryItem>? itemsRepository;
-        private readonly CataLogClient? cataLogClient;
+        private readonly IRepository<InventoryItem>? inventoryItemRepository;
+        private readonly IRepository<CatalogItem>?  catalogItemRepository;
 
-        public ItemsController(IRepository<InventoryItem>? itemsRepository, CataLogClient? cataLogClient)
+        public ItemsController(IRepository<InventoryItem>? inventoryItemRepository, IRepository<CatalogItem>? catalogItemRepository)
         {
-            this.itemsRepository = itemsRepository;
-            this.cataLogClient = cataLogClient;
+            this.inventoryItemRepository = inventoryItemRepository;
+            this.catalogItemRepository = catalogItemRepository;
         }
+
         [HttpGet]
         public async Task<ActionResult<List<InventoryItemDto>>> GetAsync(Guid userId)
         {
@@ -25,15 +26,18 @@ namespace Play.Inventory.Service.Controllers
             {
                 return BadRequest(); // Trả về mã  400 không tìm thấy dữ liệu
             }
-            // Tất cả các sản phẩm bên service Play.catalog
-            var catalogItems = await cataLogClient.GetCatalogItemsAsync();
 
-            var items = await itemsRepository.GetAllAsync(c => c.UserId == userId);
+            IEnumerable<InventoryItem> inventoryItemsEntities = await inventoryItemRepository.GetAllAsync(item => item.UserId.Equals(userId));
 
-            var inventoryItemDto = items.Select(inventoryItem => 
+            IEnumerable<Guid> itemIds = inventoryItemsEntities.Select(p => p.CatalogItemId);
+
+            IEnumerable<CatalogItem> catalogItems = await catalogItemRepository.GetAllAsync(p => itemIds.Contains(p.Id));
+
+
+            var inventoryItemDto = inventoryItemsEntities.Select(inventoryItem => 
             {
-                // Lấy ra cái sản phẩm mà có  Id bằng với id nhập vào
-                var catalogItem = catalogItems.Single(catalogitem => catalogitem.Id == inventoryItem.CatalogItemId);
+                // Lấy ra cái sản phẩm mà có Id bằng với id nhập vào
+                CatalogItem catalogItem = catalogItems.Single(catalogitem => catalogitem.Id == inventoryItem.CatalogItemId);
                 return inventoryItem.AsDto(catalogItem.Name, catalogItem.Description);
             });
 
@@ -43,7 +47,8 @@ namespace Play.Inventory.Service.Controllers
         public async Task<ActionResult> PostAsync(GrantItemDto grantItemDto)
         {
             // Tìm sản phẩm mà người tạo là người dùng đó và  có danh mục sản phẩm ấy
-            InventoryItem inventoryItem = await itemsRepository.
+            InventoryItem inventoryItem = await inventoryItemRepository
+            .
                 GetAsync(c => c.UserId == grantItemDto.UserId && c.CatalogItemId == grantItemDto.CatalogItemId);
 
             if(inventoryItem == null)
@@ -56,14 +61,14 @@ namespace Play.Inventory.Service.Controllers
                     AcquiredDate = DateTimeOffset.UtcNow
                 };
                 // Đẩy vào MongoDb
-                await itemsRepository.CreateAsync(inventoryItem);
+                await inventoryItemRepository.CreateAsync(inventoryItem);
             }
             else
             {
                 // Nếu đã có rồi thì số lượng sẽ được cộng thêm
                 inventoryItem.Quatity += grantItemDto.Quantity;
                 // Update vào trong csdl
-                await itemsRepository.UpdateAsync(inventoryItem);
+                await inventoryItemRepository.UpdateAsync(inventoryItem);
             }
             
             return Ok(inventoryItem);
