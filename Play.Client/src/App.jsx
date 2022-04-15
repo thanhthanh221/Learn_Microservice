@@ -2,6 +2,7 @@ import './App.css';
 import {useState} from "react";
 import  Content from "./content";
 import {useEffect} from "react";
+import B1 from "./SetWt";
 
 // TodoList
 function App() {
@@ -18,7 +19,7 @@ function App() {
     <div className="App">
       <button onClick={() => SetCheck(!check)}>SetUp</button>
       {
-        check && <Content />
+        check && <B1 />
       }
     </div>
   );
