@@ -6,6 +6,7 @@
 3. Play.Infra : Khởi tạo docker lưu trữ MongoDb/RabbitMQ
 4. Play.Inventory : Hàng Trong Kho lưu trữ
 5. Play.Client : Client App(React Js)
+6. Play.Identity : Xác định danh tính - Xác định quyền truy cập
 
 ---------------------------------
 # Run(Service) : Dotnet Run

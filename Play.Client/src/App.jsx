@@ -19,7 +19,7 @@ function App() {
     <div className="App">
       <button onClick={() => SetCheck(!check)}>SetUp</button>
       {
-        check && <B1 />
+        check && <Content />
       }
     </div>
   );

@@ -3,17 +3,17 @@ import { useEffect } from "react";
 
 
 function Content() {
-    const tabs = ["body","name", "email"];
+    const tabs = ["id","name", "description"];
     
     const [values, setTitles] = useState([]);
-    const [type , setType] = useState("email");
+    const [type , setType] = useState("description");
 
     const [checkWt, SetCheckWt] = useState(false);
 
     
     // ưu tiên luồng chính giao diện người dùng
     useEffect(() => {
-        fetch("https://jsonplaceholder.typicode.com/comments").then(p => p.json()).then(p => setTitles(p));
+        fetch("https://localhost:7070/Items").then(p => p.json()).then(p => setTitles(p));
 
     },[type]);
     useEffect(() => {
@@ -42,7 +42,7 @@ function Content() {
             {
                 values.map((p) => (
                     <li key={p.id}>{p[type]}</li>
-                ))            
+                ))               
             }
             {
                 checkWt && (

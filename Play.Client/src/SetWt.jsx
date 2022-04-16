@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 
 function B1() {
-    const [value, setvalue] = useState(window.innerWidth);
-
+    const [Catalogs, SetCatalog] = useState({});
     useEffect(() => {
-        const handleResize = () => {
-            setvalue(window.innerWidth);
-        }
-        window.addEventListener("resize", handleResize);
-        return window.removeEventListener("reset", handleResize);       
+        fetch('https://localhost:7070/Items').then(response => response.json()).then(data => SetCatalog(data));
+        console.log(SetCatalog);
     },[]);
-
     return (
-        <div onChange={() => setvalue(window.innerWidth)}>
-            <p>{value}</p>
+        <div>
+            <ul> {
+                Catalogs.map(p => {
+                    <li key={p["id"]}>{p["Description"]}</li>
+                })
+            }
+            </ul>
         </div>
     )
 }

@@ -5,6 +5,7 @@ using Play.Catalog.Contracts;
 using Play.Common;
 using play.catalog.service.Entities;
 using play.catalog.service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Play.Catalog.Service.Controllers
 {
