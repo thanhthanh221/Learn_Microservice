@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Play.identity.Service.Data;
 using Microsoft.EntityFrameworkCore;
 using Play.identity.Service.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 
 namespace Play.identity.Service.Extensions 
@@ -23,7 +24,7 @@ namespace Play.identity.Service.Extensions
         }
         public static IServiceCollection SetUpIdentity(this IServiceCollection services)
         {
-             services.Configure<IdentityOptions> (options => {
+            services.Configure<IdentityOptions> (options => {
                 // Thiết lập về Password
                 options.Password.RequireDigit = true; // bắt phải có số
                 options.Password.RequireLowercase = true; // bắt phải có chữ thường
@@ -49,6 +50,16 @@ namespace Play.identity.Service.Extensions
 
 
             });
+            return services;
+        }
+        public static IServiceCollection AuthenticationCookie(this IServiceCollection services)
+        {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => {
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // Thời gian Cookie có hiệu lực
+                    options.SlidingExpiration = true;   // Cấp lại coookie mới 
+                    options.AccessDeniedPath = "./ForNull";   // Đường dẫn chuyển hướng
+                });
             return services;
         }
         
