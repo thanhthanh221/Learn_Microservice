@@ -144,5 +144,28 @@ button:hover {
   margin-right: 0.25rem;
   outline: none;
 }
+.InputColor {
+  width: 100%;
+  display: flex; /*Đẩy hết xang trái*/
+  justify-content: flex-start;
+  margin: 0.5rem 0 0;
+  padding: 0 0.5rem 0.25rem; /*trên dưới (trái phải) */
+  border-bottom: 1px solid #eee;
+
+}
+.InputColor label {
+  position: absolute;
+  left: -99999px;
+}
+.InputColor input[type = "text"] {
+  min-height: 48px;
+  flex-grow: 1;
+  min-height: 48px;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;  /*Uốn tròn khung*/
+  margin-right: 0.25rem;
+  outline: none;
+}
 
 

@@ -3,16 +3,30 @@ import './App.css';
 import Header from './Header';
 import Content from './Content';
 import Footer from './Footer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AddItem from './AddItem';
 import SearchItem from './SearchItem';
+import Input from './Components/Input';
+import Square from './Components/Square';
+
 
 function App() {
+  const [colorBg, setColorBg] = useState('');
+
   const [newItem, SetAddItem] = useState('');
 
   const [items, setItem] = useState(JSON.parse(localStorage.getItem('shoppinglist')));
 
   const [search, setSearch] = useState('');
+
+
+  useEffect(() => {
+    localStorage.setItem('shoppinglist', JSON.stringify(items));
+    console.log("Render");
+  }, [items]);
+   // Truyền mảng rỗng chỉ gọi 1 lần
+   // items thay đổi thì gọi
+   // UseEf sẽ gọi sau
 
   const setAndSaveItems = (newItems) => {
     setItem(newItems);
@@ -46,8 +60,17 @@ function App() {
   };
   
   return (
-    <div className="App">
+    <div className="App" id='App1' >
+
       <Header title ="Tạp hóa bán hàng"/>
+      <Square
+        colorBg={colorBg}
+      />
+
+      <Input
+        colorBg = {colorBg}
+        setColorBg  = {setColorBg}
+      />
 
       <SearchItem 
         search = {search}
@@ -65,7 +88,6 @@ function App() {
         handlerChecked = {handlerChecked}
         handlerDelete = {handlerDelete}
       />
-
       <Footer length= {items.length} />
     </div>
   );

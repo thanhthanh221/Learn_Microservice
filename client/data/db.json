@@ -1,0 +1,19 @@
+{
+    "items" : [
+        {
+            "id" :1,
+            "checked" : false,
+            "item" : "Bim Bim khoai tây"
+        },
+        {
+            "id" :2,
+            "checked" : false,
+            "item" : "Bim Bim khoai tây"
+        },
+        {
+            "id" : 3,
+            "checked": false,
+            "item" : "Sữa chua mít"
+        }
+    ]
+}
